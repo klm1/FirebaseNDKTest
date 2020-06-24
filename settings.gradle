@@ -1,0 +1,3 @@
+include ':native-library'
+include ':app'
+rootProject.name = "FireBase NDK Test"
