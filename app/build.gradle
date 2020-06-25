@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
     compileSdkVersion 29
@@ -17,6 +19,14 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig debug.signingConfig
+
+            firebaseCrashlytics {
+                nativeSymbolUploadEnabled true
+                strippedNativeLibsDir '../native-library/build/intermediates/stripped_native_libs/release/out'
+                unstrippedNativeLibsDir '../native-library/build/intermediates/cmake/release/obj'
+            }
+
         }
     }
 
@@ -30,6 +40,13 @@ dependencies {
     implementation project(':native-library')
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+
+    // Firebase SDK for Google Analytics.
+    implementation 'com.google.firebase:firebase-analytics:17.4.3'
+
+    // Firebase Crashlytics SDK.
+    implementation 'com.google.firebase:firebase-crashlytics-ndk:17.1.0'
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
