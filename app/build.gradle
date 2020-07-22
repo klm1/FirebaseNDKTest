@@ -49,7 +49,7 @@ task genNativeSymbols(type:Exec) {
 		"${alphaToolDir}/crashlytics-buildtools.jar",
         "-generateNativeSymbols",
 		"-strippedLibrariesDir",
-        "${rootDir}/native-library/build/intermediates/stripped_native_libs/release/out",
+        "${rootDir}/native-library/build/intermediates/stripped_native_libs/release/out/lib",
 		"-unstrippedLibrariesDir",
         "${rootDir}/native-library/build/intermediates/cmake/release/obj",
 		"-symbolFileCacheDir=${symbolCacheDir}",
