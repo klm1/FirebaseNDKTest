@@ -2,6 +2,11 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 
+// set the following three values as appropriate
+def symbolCacheDir = new File(rootDir, 'native-library/build/intermediates/crashlyticsSymbolCache')
+def alphaToolDir = "/usr/local/lib"
+def googleAppId = "x:xxxxxxxxxxxx:android:xxxxxxxxxxxxxxxx"
+
 android {
     compileSdkVersion 29
 
@@ -33,6 +38,43 @@ android {
     buildFeatures {
         viewBinding true
     }
+}
+
+task genNativeSymbols(type:Exec) {
+	description "Generate the .cSYM file in SYMBOL_CACHE_DIR"
+
+	executable = "java"
+	args = [
+		"-jar",
+		"${alphaToolDir}/crashlytics-buildtools.jar",
+        "-generateNativeSymbols",
+		"-strippedLibrariesDir",
+        "${rootDir}/native-library/build/intermediates/stripped_native_libs/release/out",
+		"-unstrippedLibrariesDir",
+        "${rootDir}/native-library/build/intermediates/cmake/release/obj",
+		"-symbolFileCacheDir=${symbolCacheDir}",
+        "-verbose"
+	]
+
+    doFirst {
+        delete "$symbolCacheDir"
+    }
+}
+
+task pushNativeSymbols(type:Exec) {
+	description "Upload all .cSYM files to Crashlytics servers and associate with the specified app."
+    dependsOn "genNativeSymbols"
+
+	executable = "java"
+	args = [
+		"-jar",
+		"${alphaToolDir}/crashlytics-buildtools.jar",
+        "-uploadNativeSymbols",
+		"-androidApplicationId=com.example.firebasendktest",
+		"-googleAppId=${googleAppId}",
+		"-symbolFileCacheDir=$symbolCacheDir",
+        "-verbose"
+	]
 }
 
 dependencies {
