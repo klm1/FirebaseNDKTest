@@ -14,6 +14,7 @@ extern "C" JNIEXPORT jint JNICALL
         JNIEnv* env,
         jclass /* this */) {
 
-    jclass jcls = env->FindClass("java/lang/Exception");
-    return env->ThrowNew(jcls, "Test Native Crash");
+    int* foo = (int*)-1;
+    printf("%d\n", *foo);
+    return *foo;
 }
